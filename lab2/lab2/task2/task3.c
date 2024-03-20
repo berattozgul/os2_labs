@@ -1,0 +1,44 @@
+#include <linux/init.h>
+#include <linux/module.h>
+#include <linux/kernel.h>
+
+#define STACK_SIZE 10
+
+// Structure to represent an element on the stack
+struct stack_element {
+  int value;
+};
+
+static struct stack_element stack[STACK_SIZE];
+static int stack_pointer = -1; // -1 indicates empty stack
+
+static int __init my_module_init(void) {
+  printk(KERN_INFO "Module loaded\n");
+
+  // Simulate pushing elements onto the stack
+  for (int i = 0; i < 5; i++) {
+    stack_pointer++;
+    stack[stack_pointer].value = i;
+    printk(KERN_INFO "Pushed %d onto the stack\n", stack[stack_pointer].value);
+  }
+
+  return 0;
+}
+
+static void __exit my_module_exit(void) {
+  printk(KERN_INFO "Module unloading\n");
+
+  // Simulate popping elements and printing them
+  while (stack_pointer >= 0) {
+    printk(KERN_INFO "Popped %d from the stack\n", stack[stack_pointer].value);
+    stack_pointer--;
+  }
+}
+
+module_init(my_module_init);
+module_exit(my_module_exit);
+
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Arkadiusz Chrobot <a.chrobot@tu.kielce.pl>");
+MODULE_DESCRIPTION("A module demonstrating the use of the slab allocator.");
+MODULE_VERSION("1.0");
